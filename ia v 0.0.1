@@ -1,0 +1,32 @@
+import time
+import numpy as np
+import cv2
+import mss
+import pyautogui
+
+print("🧠 Enfocá la ventana del juego...")
+time.sleep(3)
+
+# Captura pantalla completa (simple)
+sct = mss.mss()
+
+ultimo = 0
+
+while True:
+    img = np.array(sct.grab(sct.monitors[1]))  # pantalla completa
+    frame = cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY)
+
+    valor = np.mean(frame)
+
+    # Si cambia mucho la imagen → acción
+    if abs(valor - ultimo) > 5:
+        pyautogui.press("space")
+
+    ultimo = valor
+
+    # Preview (opcional)
+    cv2.imshow("IA", frame)
+    if cv2.waitKey(1) == 27:
+        break
+
+    time.sleep(0.03)
